@@ -7,7 +7,7 @@ echo ------------------------------
 echo dependencies: mysql_run_to_import_dumps.exe, mysqldump.exe
 echo ------------------------------
 
-:: Проверяем наличие первого обязательного параметра
+:: РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ РїРµСЂРІРѕРіРѕ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР°
 if [%2]==[] (goto :show_error) else (goto :set_sql_file)
 
 :show_error
@@ -15,27 +15,27 @@ echo ERROR: 1-st parameter (database name) should be set.
 goto :eof
 
 :set_sql_file
-:: MySQL путь (заменить MySQL-XXX на правильное название папки)
+:: MySQL РїСѓС‚СЊ (Р·Р°РјРµРЅРёС‚СЊ MySQL-XXX РЅР° РїСЂР°РІРёР»СЊРЅРѕРµ РЅР°Р·РІР°РЅРёРµ РїР°РїРєРё)
 set MYSQL_PATH=Q:\modules\database\MySQL-XXX
 
-:: Устанавливаем название базы (берется как 2 параметр в коммандной строке)
+:: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅР°Р·РІР°РЅРёРµ Р±Р°Р·С‹ (Р±РµСЂРµС‚СЃСЏ РєР°Рє 2 РїР°СЂР°РјРµС‚СЂ РІ РєРѕРјРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРµ)
 set DB_NAME=%2
 
-:: Устанавливаем название файла дампа базы
-:: Получаем название SQL файла из коммандной строки (3-й параметр)
+:: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅР°Р·РІР°РЅРёРµ С„Р°Р№Р»Р° РґР°РјРїР° Р±Р°Р·С‹
+:: РџРѕР»СѓС‡Р°РµРј РЅР°Р·РІР°РЅРёРµ SQL С„Р°Р№Р»Р° РёР· РєРѕРјРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё (3-Р№ РїР°СЂР°РјРµС‚СЂ)
 if [%3]==[] (set SQL_FILE=%DB_NAME%.sql) else (set SQL_FILE=%3)
 
-:: таблицы которые будем использовать (4-й параметр)
-:: синтаксис: --tables t1 t2 ...
+:: С‚Р°Р±Р»РёС†С‹ РєРѕС‚РѕСЂС‹Рµ Р±СѓРґРµРј РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ (4-Р№ РїР°СЂР°РјРµС‚СЂ)
+:: СЃРёРЅС‚Р°РєСЃРёСЃ: --tables t1 t2 ...
 if [%4]==[] (set DB_TABLES=) else (set DB_TABLES=%~4)
 
-:: таблицы которые будем игнорить
-:: синтаксис: --ignore-table=%DB_NAME%.table1 --ignore-table=%DB_NAME%.table2
+:: С‚Р°Р±Р»РёС†С‹ РєРѕС‚РѕСЂС‹Рµ Р±СѓРґРµРј РёРіРЅРѕСЂРёС‚СЊ
+:: СЃРёРЅС‚Р°РєСЃРёСЃ: --ignore-table=%DB_NAME%.table1 --ignore-table=%DB_NAME%.table2
 set DB_TABLES_IGNORE=
 
 set CURRENT_DIR=%CD%
 
-:: Комманда дампа, либо restore, либо backup (1-й параметр)
+:: РљРѕРјРјР°РЅРґР° РґР°РјРїР°, Р»РёР±Рѕ restore, Р»РёР±Рѕ backup (1-Р№ РїР°СЂР°РјРµС‚СЂ)
 set DUMP_CMD=%1
 
 echo CURRENT_DIR: %CURRENT_DIR%
@@ -48,29 +48,29 @@ echo ------------------------------
 if %DUMP_CMD%==restore (goto :restore)
 if %DUMP_CMD%==backup (goto :backup)
 
-echo Ошибка. Допустимые значения для первого параметра: restore|backup
+echo РћС€РёР±РєР°. Р”РѕРїСѓСЃС‚РёРјС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РґР»СЏ РїРµСЂРІРѕРіРѕ РїР°СЂР°РјРµС‚СЂР°: restore|backup
 goto :eof
 
 :restore
-:: Восстанавливаем базу
+:: Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р±Р°Р·Сѓ
 echo.
 echo Restoring...
 %MYSQL_PATH%\bin\mysql_run_to_import_dumps.exe -u root %DB_NAME% < %SQL_FILE%
 
-:: Ждем нажатия клавиши
+:: Р–РґРµРј РЅР°Р¶Р°С‚РёСЏ РєР»Р°РІРёС€Рё
 pause
 
 goto :eof
 
 :backup
-:: Делаем дамп базы
+:: Р”РµР»Р°РµРј РґР°РјРї Р±Р°Р·С‹
 echo.
 echo Make backup...
 
 :: command list: http://dev.mysql.com/doc/refman/5.5/en/mysqldump.html
 %MYSQL_PATH%\bin\mysqldump.exe -u root --add-drop-table --skip-complete_insert --skip-extended-insert --set-charset --default_character_set=utf8 --order-by-primary --verbose %DB_TABLES_IGNORE% --databases %DB_NAME% %DB_TABLES% > %SQL_FILE%
 
-:: Ждем нажатия клавиши
+:: Р–РґРµРј РЅР°Р¶Р°С‚РёСЏ РєР»Р°РІРёС€Рё
 pause
 
 goto :eof
