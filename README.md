@@ -4,7 +4,7 @@ mysql_dump_win
 MySQL dumper batch scripts for Windows
 
 - Sergey Dyagovchenko, http://d.sumy.ua/
-- версия: 16.12.2012
+- версия: 25.12.2012
 - github: https://github.com/DyaGa/mysql_dump_win
 
 Этот скрипт является переделанной версией скрипта, которую разработал [Артем Волк](http://artvolk.sumy.ua/). Спасибо тебе Артем :)
